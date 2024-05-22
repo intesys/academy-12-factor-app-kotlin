@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>AI Proxy</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-wrapper">
+    <a href="/" class="brand-logo">&nbsp;AI Proxy</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row center-align">
+    <h1>&nbsp;</h1>
+    <h4>Enter your prompt!</h4>
+    <h5 id="configs"></h5>
+  </div>
+  <div class="row">
+    <form class="col s12" id="proxyForm" autocomplete="off">
+      <div class="row">
+        <div class="input-field col s12">
+          <input id="inputData" class="materialize-input"></input>
+          <label for="inputData"></label>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="center-align">
+    <blockquote id="responseArea">
+    </blockquote>
+    <div class="preloader-wrapper active hide" id="spinner">
+      <div class="spinner-layer spinner-red-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+
+<script>
+  const form = document.getElementById('proxyForm');
+  const spinner = document.getElementById('spinner');
+  const responseArea = document.getElementById('responseArea');
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    const inputData = document.getElementById('inputData').value;
+    spinner.classList.remove('hide'); // Show spinner
+    responseArea.textContent = ''; // Clear previous response
+
+    fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({prompt: inputData})
+    })
+    .then(response => response.json())
+    .then(data => {
+      spinner.classList.add('hide'); // Hide spinner
+      responseArea.innerText = data['result'];
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      spinner.classList.add('hidden'); // Ensure spinner is hidden on error
+      responseArea.innerText = 'Error: ' + error.toString();
+    });
+  });
+
+  const configArea = document.getElementById('configs');
+  fetch('/configs', {
+    method: 'GET'
+  })
+  .then(response => response.json())
+  .then(data => {
+    configArea.innerText = 'Now querying ' + data['ai'];
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    configArea.innerText = 'Error: ' + error.toString();
+  });
+
+
+</script>
+</body>
+</html>
