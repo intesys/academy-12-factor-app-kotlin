@@ -10,6 +10,8 @@ import java.time.Duration
 
 class OpenllamaChatClient(private val baseUrl: String, private val model: String) : ChatClient {
 
+    private val log = LoggerFactory.getLogger("ChatGPTClient");
+
     private val client = OkHttpClient()
         .newBuilder()
         .readTimeout(Duration.ofSeconds(60))
@@ -36,6 +38,7 @@ class OpenllamaChatClient(private val baseUrl: String, private val model: String
         client.newCall(request).execute().use { response ->
 
             if (!response.isSuccessful) {
+                log.error("Openllama chat client error")
                 throw RuntimeException("Unexpected code $response")
             }
 

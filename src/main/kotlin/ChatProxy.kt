@@ -1,6 +1,10 @@
 package org.example
 
+import org.slf4j.LoggerFactory
+
 class ChatProxy: ChatClient {
+    val log = LoggerFactory.getLogger("main")
+
     val config = Configs();
 
     override fun chat(prompt: String): String {
@@ -12,15 +16,15 @@ class ChatProxy: ChatClient {
 
         when (chatClientToUse) {
             "OPENLLAMA" -> {
-                println("instantiating openllama")
+                log.info("instantiating openllama")
                 return OpenllamaChatClient(config.getProperty("OPENLLAMA_URL"), config.getProperty("MODEL"))
             }
             "CHATGPT" -> {
-                println("instantiating chatgpt")
+                log.info("instantiating chatgpt")
                 return ChatGPTChatClient(config.getProperty("CHATGPT_API_KEY"), config.getProperty("MODEL"))
             }
             else -> {
-                println("WARN no chat configured")
+                log.warn("WARN no chat configured")
                 return NoChatClient()
             }
         }

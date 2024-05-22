@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory
 
 fun main() {
 
+    val log = LoggerFactory.getLogger("main")
+
     val config = Configs();
 
     val app = Javalin.create { config ->
@@ -18,10 +20,10 @@ fun main() {
 
     app.post("/chat") { ctx ->
         val prompt = JsonPath.read<String>(ctx.body(), "$.prompt")
-        println("Querying chat proxy with promt '$prompt'")
+        log.info("Querying chat proxy with promt '$prompt'")
         val chat = ChatProxy()
         val resultString = prompt?.let { chat.chat(prompt) }
-        println("Received results from chat client")
+        log.info("Received results from chat client")
         if (resultString != null) {
             ctx.json(mapOf("result" to resultString))
         } else {
