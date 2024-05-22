@@ -1,5 +1,9 @@
 package org.example
 
+import io.javalin.Javalin
+
 fun main() {
-    println("Hello World!")
+    val app = Javalin.create(/*config*/)
+        .get("/") { ctx -> ctx.result("Hello World") }
+        .start(7070)
 }
