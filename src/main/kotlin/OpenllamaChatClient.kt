@@ -29,6 +29,8 @@ class OpenllamaChatClient(private val baseUrl: String, private val model: String
             }
         """.trimIndent()
 
+        log.info("Querying opellama with prompt $requestBody")
+
         val request = Request.Builder()
             .url(url)
             .addHeader("Content-Type", "application/json")
